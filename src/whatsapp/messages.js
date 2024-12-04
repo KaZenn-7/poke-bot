@@ -1,4 +1,6 @@
 import baileys from "@whiskeysockets/baileys";
+import { getPokemon } from "../lib/pokeapi.js"
+import { getImageBase64 } from "../lib/func/base64.js"
 
 const prefix = "/";
 
@@ -77,7 +79,7 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
         : info.key.remoteJid;
 
       const getGroupAdmins = (participants) => {
-        admins = [];
+        let admins = [];
 
         for(let i of participants) {
           if(i.admin == "admin" || i.admin == "superadmin") admins.push(i.id);
@@ -340,7 +342,30 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
         case "ping": {
           reply("pong!");
           break;
+        }
 
+        case "pokemon": {
+          if(!q) return reply(`Por favor, forneça o nome ou id de um Pokémon.\nEx: ${command} pikachu`);
+          if(args.length > 1) return reply(`Por favor, buesque apenas um pokemon por vez.\nEx: ${command} pikachu`);
+          try {
+            let pokemon = await getPokemon(q);
+            let base64 = !pokemon ? null : await getImageBase64(pokemon.imageURL)
+
+            conn.sendMessage(from, { text:  pokemon.message, contextInfo: {
+              externalAdReply: {
+                title: `🌟 ${pokemon.data.name.toUpperCase()} 🌟`,
+                body: ``,
+                previewType: `PHOTO`,
+                thumbnail: base64
+              }
+            }})
+          } catch(e) {
+            reply("Erro ao buscar pokemon, verifique se digitou corretamente o nome!")
+            console.error(e.message)
+            return;
+          }
+
+          break;
         }
 
         default:

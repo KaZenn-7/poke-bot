@@ -1,29 +1,21 @@
 import axios from 'axios';
 
-export async function handleMessage(message) {
-    const command = message.toLowerCase();
+export async function getPokemon(nameOrId) {
 
-    if (command.startsWith('!pokemon')) {
-        const [, pokemonName] = command.split(' ');
-        if (!pokemonName) {
-            return 'Por favor, forneça o nome de um Pokémon. Exemplo: !pokemon pikachu';
-        }
+    if (!nameOrId) return 'Por favor, forneça o nome de um Pokémon.';
 
-        try {
-            const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`);
-            return `🌟 ${data.name.toUpperCase()} 🌟
-🆔 ID: ${data.id}
-⚔️ Ataque: ${data.stats[1].base_stat * 10}
-🛡️ Defesa: ${data.stats[2].base_stat * 10}
-❤️ HP: ${data.stats[0].base_stat * 10}`;
-        } catch (error) {
-            return 'Não consegui encontrar esse Pokémon. Certifique-se de que o nome está correto.';
-        }
+    try {
+        const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nameOrId}`);
+        if (!data) throw new Error(`Error getting pokemon: ${nameOrId}`) ;
+        return{ data,
+        message:`🆔 ID: ${data.id}\n⚔️ Ataque: ${data.stats[1].base_stat * 10}\n🛡️ Defesa: ${data.stats[2].base_stat * 10}\n❤️ HP: ${data.stats[0].base_stat * 10}`,
+        imageURL: data.sprites.front_default };
+    } catch (error) {
+        return undefined;
     }
 
-    return null;
 }
 
-// let a = await handleMessage("!pokemon pikachu");
+// let a = await getPokemon(25);
 
 // console.log(a);
