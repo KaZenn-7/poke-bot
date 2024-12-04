@@ -1,0 +1,37 @@
+{
+  "name": "poke-bot",
+  "version": "1.0.0",
+  "description": "A simple pokemon bot usin NodeJS, PokeAPI and MongoDB",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KaZenn-7/poke-bot.git"
+  },
+  "keywords": [
+    "pokemon",
+    "node",
+    "pokeapi",
+    "mongodb",
+    "whatsapp",
+    "bot"
+  ],
+  "author": "ramo-s",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/KaZenn-7/poke-bot/issues"
+  },
+  "homepage": "https://github.com/KaZenn-7/poke-bot#readme",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^6.7.7",
+    "axios": "^1.7.7",
+    "colors": "^1.4.0",
+    "fs-extra": "^11.2.0",
+    "moment-timezone": "^0.5.45",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
