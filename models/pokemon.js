@@ -13,4 +13,4 @@ const pokemonSchema = new mongoose.Schema({
     abilities: [String],                   // Lista de habilidades
 });
 
-export default mongoose.model('Pokemon', userSchema);
+export default mongoose.model('Pokemon', pokemonSchema);

@@ -30,8 +30,10 @@
     "@whiskeysockets/baileys": "^6.7.7",
     "axios": "^1.7.7",
     "colors": "^1.4.0",
+    "dotenv": "^16.4.7",
     "fs-extra": "^11.2.0",
     "moment-timezone": "^0.5.45",
+    "mongoose": "^8.8.3",
     "qrcode-terminal": "^0.12.0"
   }
 }

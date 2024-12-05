@@ -1,6 +1,7 @@
 import baileys from "@whiskeysockets/baileys";
 import { getPokemon } from "../lib/pokeapi.js"
 import { getImageBase64 } from "../lib/func/base64.js"
+import { createUser, getUserByWhatsappId, addItemToInventory, addPokemon, addToPokedex} from "../database/userService.js";
 
 const prefix = "/";
 
@@ -336,6 +337,8 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
 
       if (isBanned) return;
 
+      let user = await getUserByWhatsappId(sender)
+
       //INICIO DE COMANDO DE PREFIXO
       switch (command) {
 
@@ -345,11 +348,14 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
         }
 
         case "pokemon": {
+          if(!user) return reply(`Você ainda não está registrado!\n Utilize: ${prefix}reg`)
           if(!q) return reply(`Por favor, forneça o nome ou id de um Pokémon.\nEx: ${command} pikachu`);
           if(args.length > 1) return reply(`Por favor, buesque apenas um pokemon por vez.\nEx: ${command} pikachu`);
           try {
             let pokemon = await getPokemon(q);
             let base64 = !pokemon ? null : await getImageBase64(pokemon.imageURL)
+
+            await addToPokedex(sender, pokemon);
 
             conn.sendMessage(from, { text:  pokemon.message, contextInfo: {
               externalAdReply: {
@@ -365,6 +371,12 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
             return;
           }
 
+          break;
+        }
+
+        case "reg": {
+            if(!user) await createUser(sender, pushname).then(reply(`Parabéns ${pushname}! Agora você está registrado.`))
+            reply(`Você ja está registrado como "${user.name}"`)
           break;
         }
 

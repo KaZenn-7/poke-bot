@@ -5,6 +5,7 @@ import colors from "colors";
 import { Boom } from "@hapi/boom";
 import NodeCache from "node-cache";
 import { startWhats } from "./messages.js";
+import { connectDatabase } from '../database/index.js';
 
 import {
   makeWASocket,
@@ -60,6 +61,7 @@ const question = (text) => new Promise((resolve) => rl.question(text, resolve));
 const msgRetryCounterCache = new NodeCache();
 
 export async function INC() {
+  await connectDatabase();
   const { state, saveCreds } = await useMultiFileAuthState(qrcode);
   const { version } = await fetchLatestBaileysVersion();
 

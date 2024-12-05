@@ -7,6 +7,13 @@ const itemSchema = new mongoose.Schema({
     quantity: { type: Number, default: 1 }, // Quantidade do item
 });
 
+// Modelo de knownPokemon
+const knownPokemon = new mongoose.Schema({
+    name: { type: String, required: true }, // Nome do pokemon
+    pokeId: { type: Number, required: true}, // Id do pokemon
+    alias: { type: String, default: ""}
+});
+
 // Modelo de Pokémon capturado
 const capturedPokemonSchema = new mongoose.Schema({
     name: { type: String, required: true }, // Nome do Pokémon
@@ -26,7 +33,7 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true }, // Nome do jogador
     inventory: [itemSchema],               // Array de itens na mochila
     capturedPokemons: [capturedPokemonSchema], // Array de Pokémons capturados
-    pokedex: [Number],                     // Array de números (para funcionalidades futuras)
+    pokedex: [knownPokemon],                     // Array de números (para funcionalidades futuras)
     createdAt: { type: Date, default: Date.now }, // Data de criação do usuário
 });
 
