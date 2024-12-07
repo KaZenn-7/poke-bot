@@ -35,7 +35,7 @@ export async function addToPokedex(whatsappId, pokemon) {
     const user = await User.findOne({ whatsappId });
     if (!user) throw new Error('Usuário não encontrado.');
 
-    let obj = {pokeId: pokemon.data.id, name: pokemon.data.name}
+    let obj = {pokeId: pokemon.pokemonData.id, name: pokemon.pokemonData.name}
 
     user.pokedex.push(obj);
     return await user.save();

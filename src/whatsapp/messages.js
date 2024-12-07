@@ -347,9 +347,10 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
           break;
         }
 
-        case "pokemon": {
+        case "pokedex": 
+        case "dex":{
           if(!user) return reply(`Você ainda não está registrado!\n Utilize: ${prefix}reg`)
-          if(!q) return reply(`Por favor, forneça o nome ou id de um Pokémon.\nEx: ${command} pikachu`);
+          if(!q) return reply(`Por favor, forneça o nome ou id de um pokémon para pesquisa-lo.\nEx: ${command} pikachu`);
           if(args.length > 1) return reply(`Por favor, buesque apenas um pokemon por vez.\nEx: ${command} pikachu`);
           try {
             let pokemon = await getPokemon(q);
@@ -359,7 +360,7 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
 
             conn.sendMessage(from, { text:  pokemon.message, contextInfo: {
               externalAdReply: {
-                title: `🌟 ${pokemon.data.name.toUpperCase()} 🌟`,
+                title: `🌟 ${pokemon.pokemonData.name.toUpperCase()} 🌟`,
                 body: ``,
                 previewType: `PHOTO`,
                 thumbnail: base64
@@ -367,7 +368,7 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
             }})
           } catch(e) {
             reply("Erro ao buscar pokemon, verifique se digitou corretamente o nome!")
-            console.error(e.message)
+            console.error(e)
             return;
           }
 
@@ -382,6 +383,7 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
 
         default:
           if (isCmd) {
+            return;
             uptime = process.uptime();
             conn.sendMessage(
               from,
