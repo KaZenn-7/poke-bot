@@ -111,22 +111,21 @@ export async function getPokemon(nameOrId) {
 
 
         return { pokemonData,
-        message:`🆔 ID: ${pokemonData.id}
-🔰 Status: ${legendaryStatus}
+        message:`*🆔 ID:* ${pokemonData.id}
+*🔰 Status:* ${legendaryStatus}
+*🧪 Tipo(s):* ${types}
 
-⚔️ Ataque: ${pokemonData.stats[1].base_stat * 10}
-🛡️ Defesa: ${pokemonData.stats[2].base_stat * 10}
-❤️ HP: ${pokemonData.stats[0].base_stat * 10}
+*⚔️ Ataque:* ${pokemonData.stats[1].base_stat}
+*🛡️ Defesa:* ${pokemonData.stats[2].base_stat}
+*❤️ HP:* ${pokemonData.stats[0].base_stat}
 
-🔄 Linha Evolutiva: ${evolutionChain.join(' → ')}
-📈 Métodos de Evolução:
+*🔄 Linha Evolutiva:* ${evolutionChain.join(' → ')}
+*📈 Métodos de Evolução:*
     ${evolutionMethodsList.map(e => `${e.name}: ${e.method}`).join('\n    ')}
 
-🧪 Tipos: ${types}
-
-🔺 Efetivo contra: ${Array.from(typeAdvantages.doubleDamageTo).join(', ') || 'Nenhuma'}
-🔻 Fraco contra: ${Array.from(typeAdvantages.doubleDamageFrom).join(', ') || 'Nenhuma'}
-🛡️ Resistente a: ${Array.from(typeAdvantages.halfDamageFrom).join(', ') || 'Nenhuma'}`,
+*🔺 Efetivo contra:* ${Array.from(typeAdvantages.doubleDamageTo).join(', ') || 'Nenhuma'}
+*🔻 Fraco contra:* ${Array.from(typeAdvantages.doubleDamageFrom).join(', ') || 'Nenhuma'}
+*🛡️ Resistente a:* ${Array.from(typeAdvantages.halfDamageFrom).join(', ') || 'Nenhuma'}`,
         imageURL: pokemonData.sprites.front_default };
     } catch (error) {
         console.error(error);
