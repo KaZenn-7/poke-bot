@@ -63,14 +63,14 @@ export async function getPokemon(nameOrId) {
     if (!nameOrId) return 'Por favor, forneça o nome de um Pokémon.';
 
     try {
-        const { data: pokemonData } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nameOrId}`);
+        let { data: pokemonData } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nameOrId}`);
         if (!pokemonData) throw new Error(`Error getting pokemon: ${nameOrId}`) ;
 
         const { data: speciesData} = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${nameOrId.toLowerCase()}`);
         const { data: evolutionData } = await axios.get(speciesData.evolution_chain.url);
 
         const legendaryStatus = speciesData.is_legendary ? 'Lendário' : speciesData.is_mythical ? 'Mítico' : 'Comum';
-        const types = pokemonData.types.map(typeInfo => typeTranslations[typeInfo.type.name] || typeInfo.type.name).join(', ');
+        const types = pokemonData.types.map(typeInfo => typeTranslations[typeInfo.type.name] || typeInfo.type.name);
 
         const typeAdvantages = {
             doubleDamageTo: new Set(),
@@ -109,11 +109,12 @@ export async function getPokemon(nameOrId) {
             currentEvolution = currentEvolution.evolves_to[0];
         }
 
+        pokemonData = {...pokemonData, legendaryStatus, translatedTypes: types, evolutionChain}
 
         return { pokemonData,
         message:`*🆔 ID:* ${pokemonData.id}
 *🔰 Status:* ${legendaryStatus}
-*🧪 Tipo(s):* ${types}
+*🧪 Tipo(s):* ${types.join(', ')}
 
 *⚔️ Ataque:* ${pokemonData.stats[1].base_stat}
 *🛡️ Defesa:* ${pokemonData.stats[2].base_stat}
@@ -133,7 +134,3 @@ export async function getPokemon(nameOrId) {
     }
 
 }
-
-// let a = await getPokemon("pikachu");
-
-// console.log(a);
