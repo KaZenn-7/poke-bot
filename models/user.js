@@ -1,40 +1,40 @@
 import mongoose from 'mongoose';
-import Pokemon from "./pokemon.js"
-
-// Modelo de item para o inventário
-const itemSchema = new mongoose.Schema({
-    name: { type: String, required: true }, // Nome do item
-    quantity: { type: Number, default: 1 }, // Quantidade do item
-});
-
-// Modelo de knownPokemon
-const knownPokemon = new mongoose.Schema({
-    name: { type: String, required: true }, // Nome do pokemon
-    pokeId: { type: Number, required: true}, // Id do pokemon
-    alias: { type: String, default: ""}
-});
-
-// Modelo de Pokémon capturado
-const capturedPokemonSchema = new mongoose.Schema({
-    name: { type: String, required: true }, // Nome do Pokémon
-    level: { type: Number, default: 1 },   // Nível do Pokémon
-    stats: {                                // Estatísticas básicas
-        hp: { type: Number, required: true },
-        attack: { type: Number, required: true },
-        defense: { type: Number, required: true },
-    },
-    abilities: [String],                   // Lista de habilidades
-    capturedAt: { type: Date, default: Date.now }, // Data de captura
-});
 
 // Modelo do usuário
 const userSchema = new mongoose.Schema({
-    whatsappId: { type: String, required: true, unique: true }, // ID único do WhatsApp
-    name: { type: String, required: true }, // Nome do jogador
-    inventory: [itemSchema],               // Array de itens na mochila
-    capturedPokemons: [capturedPokemonSchema], // Array de Pokémons capturados
-    pokedex: [knownPokemon],                     // Array de números (para funcionalidades futuras)
-    createdAt: { type: Date, default: Date.now }, // Data de criação do usuário
-});
+    whatsappId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    inventory: {        // Array de objetos genérico para itens
+        type: [{
+            name: { type: String, required: true },
+            quantity: { type: Number, default: 1 }
+        }],
+        default: []
+    },
+    capturedPokemon: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Pokemon' // Referência ao modelo de Pokémon
+        }],
+        validate: [arrayLimit, '{PATH} exceeds the limit of 50'],
+        default: []
+    },
+    knownPokemons: {
+        type: [Number], // IDs da Pokédex conhecidos (PokeAPI)
+        default: []
+    }
+}, {timestamps: true});
+
+// Validação para limitar o tamanho do array capturedPokemon
+function arrayLimit(val) {
+    return val.length <= 50;
+}
 
 export default mongoose.model('User', userSchema);
