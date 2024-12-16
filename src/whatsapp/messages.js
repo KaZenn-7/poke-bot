@@ -356,7 +356,7 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
             let pokemon = await getPokemon(q);
             let base64 = !pokemon ? null : await getImageBase64(pokemon.imageURL)
 
-            await addToPokedex(sender, pokemon);
+            if(!user.knownPokemons.includes(pokemon.pokemonData.id)) await addToPokedex(sender, pokemon);
 
             conn.sendMessage(from, { text:  pokemon.message, contextInfo: {
               externalAdReply: {
