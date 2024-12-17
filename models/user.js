@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         }],
         default: []
     },
-    capturedPokemon: {
+    capturedPokemons: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Pokemon' // Referência ao modelo de Pokémon
