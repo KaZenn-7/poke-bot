@@ -1,7 +1,11 @@
 import baileys from "@whiskeysockets/baileys";
+import axios from "axios";
 import { getPokemonFromPokeAPI, getRandomPokemonByGeneration } from "../lib/pokemon/index.js"
 import { getImageBase64 } from "../lib/func/base64.js"
+
+import { createPokemon, getPokemonById, updatePokemon, deletePokemon } from "../database/pokemonService.js";
 import { createUser, getUserByWhatsappId, addItemToInventory, addPokemon, addToPokedex} from "../database/userService.js";
+
 
 const prefix = "/";
 
@@ -382,13 +386,39 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
             if(!user) return reply(`Você ainda não está registrado!\n Utilize: ${prefix}reg`)
               
             let randomPokemon = await getRandomPokemonByGeneration(1);
-            let base64 = !randomPokemon ? null : await getImageBase64(randomPokemon.sprites.front_default)
+            let { name, id, types, stats, abilities, sprites } = randomPokemon;
+            let { data: speciesData} = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+            let pokeApiData = await getPokemonFromPokeAPI(name);
+
+            let base64 = !randomPokemon ? null : await getImageBase64(sprites.front_default)
+
+            let pokeData = {
+                originalTrainerId: "675111c0ce795cd0ac1f76af",
+                currentTrainerId: "675111c0ce795cd0ac1f76af",
+                name: name,
+                pokedexId: id,
+                types: types.map(i => i.type.name),
+                stats: {
+                    hp: stats[0].base_stat,
+                    attack: stats[1].base_stat,
+                    defense: stats[2].base_stat,
+                    specialAttack: stats[3].base_stat,
+                    specialDefense: stats[4].base_stat,
+                    speed: stats[5].base_stat
+                },isLegendary: speciesData.is_legendary,
+                isMythical: speciesData.is_mythical,
+                abilities: abilities,
+                imageUrl: sprites.front_default
+            }
+
+            let pokemon = await createPokemon(pokeData);
+            if(!user.knownPokemons.includes(pokemon.pokedexId)) await addToPokedex(sender, pokemon);
   
-              conn.sendMessage(from, { text:  "pokemon.message", contextInfo: {
+              conn.sendMessage(from, { text:  pokeApiData.message, contextInfo: {
               externalAdReply: {
-                sourceUrl: `https://wa.me/${botNumber}?text=/catch%20${pokemon}`,
+                sourceUrl: `https://wa.me/${botNumber}?text=/catch%20${pokemon._id}`,
                 title: `🌟 ${randomPokemon.name.toUpperCase()} 🌟`,
-                body: ``,
+                body: `Clique no botão para capturar esse pokemon`,
                 previewType: `PHOTO`,
                 thumbnail: base64
               }
