@@ -1,4 +1,4 @@
-import { getPokemonFromPokeAPI } from "../lib/pokemon/getPokemonFromPokeAPI.js"
-import { getRandomPokemonByGeneration } from "../lib/pokemon/getRandomPokemonByGeneration.js";
+import { getPokemonFromPokeAPI } from "./getPokemonFromPokeAPI.js"
+import { getRandomPokemonByGeneration } from "./getRandomPokemonByGeneration.js";
 
 export { getPokemonFromPokeAPI, getRandomPokemonByGeneration }
