@@ -58,7 +58,7 @@ const evolutionMethods = (details) => {
     return "Método desconhecido";
 };
 
-export async function getPokemon(nameOrId) {
+export async function getPokemonFromPokeAPI(nameOrId) {
 
     if (!nameOrId) return 'Por favor, forneça o nome de um Pokémon.';
 

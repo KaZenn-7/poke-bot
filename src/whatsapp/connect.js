@@ -15,7 +15,7 @@ import {
 } from "@whiskeysockets/baileys";
 
 import readline from "readline";
-import { logger } from "../lib/logger.js";
+import { logger } from "../lib/func/logger.js";
 logger.level = "silent";
 
 let sessionStartTime;

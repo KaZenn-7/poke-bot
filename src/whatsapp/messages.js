@@ -1,5 +1,5 @@
 import baileys from "@whiskeysockets/baileys";
-import { getPokemon } from "../lib/pokeapi.js"
+import { getPokemonFromPokeAPI } from "../lib/pokemon/getPokemonFromPokeAPI.js"
 import { getImageBase64 } from "../lib/func/base64.js"
 import { createUser, getUserByWhatsappId, addItemToInventory, addPokemon, addToPokedex} from "../database/userService.js";
 
@@ -353,7 +353,7 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
           if(!q) return reply(`Por favor, forneça o nome ou id de um pokémon para pesquisa-lo.\nEx: ${command} pikachu`);
           if(args.length > 1) return reply(`Por favor, buesque apenas um pokemon por vez.\nEx: ${command} pikachu`);
           try {
-            let pokemon = await getPokemon(q);
+            let pokemon = await getPokemonFromPokeAPI(q);
             let base64 = !pokemon ? null : await getImageBase64(pokemon.imageURL)
 
             if(!user.knownPokemons.includes(pokemon.pokemonData.id)) await addToPokedex(sender, pokemon);
@@ -372,6 +372,14 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
             return;
           }
 
+          break;
+        }
+
+        case "hunt":
+        case "caçar":
+        case "cacar": {
+          if(!user) return reply(`Você ainda não está registrado!\n Utilize: ${prefix}reg`)
+        
           break;
         }
 
