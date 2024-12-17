@@ -39,7 +39,10 @@ const pokemonSchema = new mongoose.Schema({
         default: false
     },
     abilities: {
-        type: [String],
+        type: [{
+           ability: [{name: { type: String, required: true }, url: { type: String, required: true }}],
+            is_hidden: { type: String, required: true },
+        }],
         default: []
     },
     level: {
