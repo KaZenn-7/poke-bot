@@ -89,7 +89,8 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
         return admins;
       }
 
-      const botNumber = conn.user.id.split(":")[0] + SNET;
+      const botId = conn.user.id.split(":")[0] + SNET;
+      const botNumber = conn.user.id.split(":")[0];
 
       const groupDesc = isGroup ? groupMetadata.desc : "";
 
@@ -112,7 +113,7 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
 
       const SoDono = numerodono.includes(sender) || isBot;
 
-      const isBotGroupAdmins = groupAdmins.includes(botNumber) || false;
+      const isBotGroupAdmins = groupAdmins.includes(botId) || false;
 
       const isGroupAdmins = groupAdmins.includes(sender) || SoDono;
 
@@ -374,6 +375,27 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
 
           break;
         }
+
+        case "hunt":
+          case "caçar":
+          case "cacar": {
+            if(!user) return reply(`Você ainda não está registrado!\n Utilize: ${prefix}reg`)
+              
+            let randomPokemon = await getRandomPokemonByGeneration(1);
+            let base64 = !randomPokemon ? null : await getImageBase64(randomPokemon.sprites.front_default)
+  
+              conn.sendMessage(from, { text:  "pokemon.message", contextInfo: {
+              externalAdReply: {
+                sourceUrl: `https://wa.me/${botNumber}?text=/catch%20${pokemon}`,
+                title: `🌟 ${randomPokemon.name.toUpperCase()} 🌟`,
+                body: ``,
+                previewType: `PHOTO`,
+                thumbnail: base64
+              }
+            }})
+          
+            break;
+          }
 
         case "reg": {
             if(!user) await createUser(sender, pushname).then(reply(`Parabéns ${pushname}! Agora você está registrado.`))
