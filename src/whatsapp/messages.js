@@ -1,5 +1,5 @@
 import baileys from "@whiskeysockets/baileys";
-import { getPokemonFromPokeAPI } from "../lib/pokemon/getPokemonFromPokeAPI.js"
+import { getPokemonFromPokeAPI, getRandomPokemonByGeneration } from "../lib/pokemon/index.js"
 import { getImageBase64 } from "../lib/func/base64.js"
 import { createUser, getUserByWhatsappId, addItemToInventory, addPokemon, addToPokedex} from "../database/userService.js";
 
@@ -372,14 +372,6 @@ export async function startWhats(upsert, conn, qrcode, sessionStartTim) {
             return;
           }
 
-          break;
-        }
-
-        case "hunt":
-        case "caçar":
-        case "cacar": {
-          if(!user) return reply(`Você ainda não está registrado!\n Utilize: ${prefix}reg`)
-        
           break;
         }
 
