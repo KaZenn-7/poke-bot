@@ -2,11 +2,6 @@ import mongoose from 'mongoose';
 
 // Modelo de Pokémon capturado
 const pokemonSchema = new mongoose.Schema({
-    uniqueId: {
-        type: String,
-        default: uuidv4, // Gerar ID único automaticamente
-        unique: true
-    },
     originalTrainerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User' // Referência ao modelo de usuário
