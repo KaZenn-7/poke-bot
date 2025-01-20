@@ -66,7 +66,7 @@ export async function getPokemonFromPokeAPI(nameOrId) {
         let { data: pokemonData } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nameOrId}`);
         if (!pokemonData) throw new Error(`Error getting pokemon: ${nameOrId}`) ;
 
-        const { data: speciesData} = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${nameOrId.toLowerCase()}`);
+        const { data: speciesData} = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${nameOrId}`);
         const { data: evolutionData } = await axios.get(speciesData.evolution_chain.url);
 
         const legendaryStatus = speciesData.is_legendary ? 'Lendário' : speciesData.is_mythical ? 'Mítico' : 'Comum';
