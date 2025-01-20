@@ -13,5 +13,3 @@ export function toCapitalize(ogString){
     
     return string
 }
-
-console.log(toCapitalize("pikachu pei"));
