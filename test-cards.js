@@ -1,14 +1,33 @@
 import { createCanvas, loadImage } from 'canvas';
+import axios from 'axios';
 import fs from 'fs';
 
-import { toCapitalize } from './src/lib/func/toCapitalize.js'
+import { toCapitalize, getImageBase64 } from './src/lib/func/index.js'
 import { typesArray } from './assets/types.js'
+import { getPokemonCaptureRate, getPokemonFromPokeAPI, getRandomPokemonByGeneration } from './src/lib/pokemon/index.js'
+
 const typesSpriteBaseURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-viii/sword-shield/"
 
 const backgroundImgLink = "https://wallpapercave.com/wp/wp2595124.jpg"
 
 const createPokemonCard = async (pokemon) => {
     const { name, types, stats, imageUrl } = pokemon;
+
+    let capture_rate = await getPokemonCaptureRate(name);
+    let backColor = ""
+    if(capture_rate <= 3){
+      backColor = "rgb(29, 29, 29)" //"rgb(255, 230, 0)";
+    } else if(capture_rate <= 30){
+      backColor = "rgb(255, 8, 0)";
+    } else if(capture_rate <= 45){
+      backColor = "rgb(118, 0, 148)";
+    } else if(capture_rate <= 90){
+      backColor = "rgb(50, 0, 168)";
+    } else if(capture_rate <= 190){
+      backColor = "rgb(32, 161, 0)";
+    } else {
+      backColor = "rgb(150, 150, 150)";
+    }
 
     // Configurações do canvas
     let width = 400;
@@ -17,7 +36,8 @@ const createPokemonCard = async (pokemon) => {
     const ctx = canvas.getContext('2d');
 
     // Fundo do card
-    ctx.fillStyle = 'rgb(102, 102, 102)';//'#4169e1'; 
+    //ctx.fillStyle = 'rgb(102, 102, 102)';//'#4169e1'; 
+    ctx.fillStyle = backColor;
     ctx.fillRect(0, 0, width, height);
 
     // Fundo atrás da imagem do Pokémon (retângulo)
@@ -68,9 +88,29 @@ const createPokemonCard = async (pokemon) => {
     let statsYStart = 395;
     ctx.font = '18px Arial';
     Object.entries(stats).forEach(([statName, statValue], index) => {
-        if(statName === "specialAttack") statName = "Special Attack";
-        if(statName === "specialDefense") statName = "Special Defense";
-        ctx.fillText(`${statName.split(" ").length > 1 ? statName : toCapitalize(statName)}: ${statValue}`, 30, statsYStart + index * 22);
+      switch (statName) {
+        case "hp":
+          statName = "HP";
+          break;
+        case "attack":
+          statName = "ATK";
+          break;
+        case "defense":
+          statName = "DEF";
+          break;
+        case "specialAttack": 
+          statName = "ATK Esp.";
+          break;
+        case "specialDefense": 
+          statName = "DEF Esp.";
+          break;
+        case "speed":
+          statName = "SPD";
+          break;
+        default: throw new Error("Unknown statName");
+      }
+
+        ctx.fillText(`${statName}: ${statValue}`, 30, statsYStart + index * 22);
     });
 
     // Salvar o card como uma imagem
@@ -206,5 +246,30 @@ const otherPokemon = {
   __v: 0,
 };
 
+let randomPokemon = await getRandomPokemonByGeneration(1);
+let { name, id, types, stats, abilities, sprites } = randomPokemon;
+let { data: speciesData} = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+let pokeApiData = await getPokemonFromPokeAPI(name);
 
-createPokemonCard(examplePokemon).catch(console.error);
+let base64 = !randomPokemon ? null : await getImageBase64(sprites.front_default)
+
+let pokeData = {
+    originalTrainerId: "675111c0ce795cd0ac1f76af",
+    currentTrainerId: "675111c0ce795cd0ac1f76af",
+    name: name,
+    pokedexId: id,
+    types: types.map(i => i.type.name),
+    stats: {
+        hp: stats[0].base_stat,
+        attack: stats[1].base_stat,
+        defense: stats[2].base_stat,
+        specialAttack: stats[3].base_stat,
+        specialDefense: stats[4].base_stat,
+        speed: stats[5].base_stat
+    },isLegendary: speciesData.is_legendary,
+    isMythical: speciesData.is_mythical,
+    abilities: abilities,
+    imageUrl: sprites.front_default
+}
+
+createPokemonCard(pokeData).catch(console.error);

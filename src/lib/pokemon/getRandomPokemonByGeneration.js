@@ -20,7 +20,7 @@ export async function getRandomPokemonByGeneration(generation) {
         pokemonSpawnRate = pokemon_species.capture_rate;
   
       } 
-      while (pokemonSpawnRate < randomSpawnRate);
+      while (pokemonSpawnRate > randomSpawnRate);
   
       let response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
       return response.data;

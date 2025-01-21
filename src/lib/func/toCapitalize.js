@@ -11,5 +11,5 @@ export function toCapitalize(ogString){
         string += " "+captalized
     }
     
-    return string
+    return string.trim();
 }
